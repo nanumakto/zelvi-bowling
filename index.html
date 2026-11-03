@@ -12,37 +12,49 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" as="image" href="splash.webp">
 <style>
-  html, body { margin: 0; height: 100%; background: #15213B; }
+  html, body { margin: 0; height: 100%; background: #0A1230; }
   body { padding-top: env(safe-area-inset-top, 0px); box-sizing: border-box; }
   iframe { display: block; width: 100%; height: 100%; border: 0; background: #EDF0F4; }
-  .splash { position: fixed; inset: 0; display: grid; place-items: center; align-content: center; gap: 18px;
-            color: #F4F6FA; font: 600 15px system-ui, -apple-system, "Segoe UI", sans-serif; transition: opacity .3s; }
-  .splash img { width: 112px; height: 112px; border-radius: 26px; }
-  .splash p { margin: 0; opacity: .75; text-align: center; padding: 0 24px; }
+
+  /* úvodní obrazovka: obrázek přes celý displej, rozmazaná kopie vyplní okraje */
+  .splash { position: fixed; inset: 0; z-index: 10; overflow: hidden; background: #0A1230; transition: opacity .45s ease; }
+  .splash::before { content: ""; position: absolute; inset: -40px; background: url(splash.webp) center / cover; filter: blur(28px) brightness(.55) saturate(1.2); }
+  .splash img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+  .splash p { position: absolute; left: 0; right: 0; bottom: max(28px, env(safe-area-inset-bottom, 0px));
+              margin: 0; padding: 0 24px; text-align: center; color: #FFF;
+              font: 700 16px system-ui, -apple-system, "Segoe UI", sans-serif; text-shadow: 0 1px 6px rgba(0,0,0,.8); }
+  .splash a { color: #FFD27A; }
   .splash.gone { opacity: 0; pointer-events: none; }
-  .splash a { color: #FF8A97; }
+  @media (prefers-reduced-motion: reduce) { .splash { transition: none; } }
 </style>
 </head>
 <body>
 <div class="splash" id="splash">
-  <img src="icon-192.png" alt="">
-  <p id="msg">Načítám Želví BOWLING…</p>
+  <img src="splash.webp" alt="Želví BOWLING">
+  <p id="msg">Načítám…</p>
 </div>
 <iframe id="app" title="Želví BOWLING" allow="clipboard-write; fullscreen"></iframe>
 <script>
   // Odkaz na nasazenou webovou aplikaci z Google Apps Script (končí /exec)
   var APP_URL = "https://script.google.com/macros/s/AKfycbxQa2uN5UsBSxv63ahBWMM3J9n-zQ4q67WVRiZNEyxNlkmEudl2-dgLMrA6GSGOGXkUWw/exec";
+  var MIN_SPLASH_MS = 1500;   // jak dlouho nejméně je vidět úvodní obrázek
 
   var frame = document.getElementById("app");
   var splash = document.getElementById("splash");
   var msg = document.getElementById("msg");
+  var started = Date.now();
+
+  function hideSplash() {
+    setTimeout(function () { splash.classList.add("gone"); }, Math.max(0, MIN_SPLASH_MS - (Date.now() - started)));
+  }
 
   if (!navigator.onLine) {
     msg.textContent = "Jste offline. Želví BOWLING potřebuje internet, výsledky jsou v Google tabulce.";
   } else {
     frame.src = APP_URL;
-    frame.addEventListener("load", function () { splash.classList.add("gone"); });
+    frame.addEventListener("load", hideSplash);
     setTimeout(function () {
       if (!splash.classList.contains("gone")) {
         msg.innerHTML = 'Načítání trvá dlouho. <a href="' + APP_URL + '" target="_blank" rel="noopener">Otevřít aplikaci přímo</a>';

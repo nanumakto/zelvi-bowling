@@ -1,6 +1,6 @@
 // Uchová obal aplikace (stránku a ikony), aby se rychle otevřel. Data se vždy berou z Google tabulky.
-const CACHE = "zelvi-bowling-v2";
-const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "icon-maskable-512.png", "apple-touch-icon.png", "favicon-32.png"];
+const CACHE = "zelvi-bowling-v3";
+const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "icon-maskable-192.png", "icon-maskable-512.png", "apple-touch-icon.png", "splash.webp", "favicon-32.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
