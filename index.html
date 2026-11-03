@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Želví BOWLING</title>
+<meta name="theme-color" content="#15213B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Želví BOWLING">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+  html, body { margin: 0; height: 100%; background: #15213B; }
+  body { padding-top: env(safe-area-inset-top, 0px); box-sizing: border-box; }
+  iframe { display: block; width: 100%; height: 100%; border: 0; background: #EDF0F4; }
+  .splash { position: fixed; inset: 0; display: grid; place-items: center; align-content: center; gap: 18px;
+            color: #F4F6FA; font: 600 15px system-ui, -apple-system, "Segoe UI", sans-serif; transition: opacity .3s; }
+  .splash img { width: 112px; height: 112px; border-radius: 26px; }
+  .splash p { margin: 0; opacity: .75; text-align: center; padding: 0 24px; }
+  .splash.gone { opacity: 0; pointer-events: none; }
+  .splash a { color: #FF8A97; }
+</style>
+</head>
+<body>
+<div class="splash" id="splash">
+  <img src="icon-192.png" alt="">
+  <p id="msg">Načítám Želví BOWLING…</p>
+</div>
+<iframe id="app" title="Želví BOWLING" allow="clipboard-write; fullscreen"></iframe>
+<script>
+  // Odkaz na nasazenou webovou aplikaci z Google Apps Script (končí /exec)
+  var APP_URL = "https://script.google.com/macros/s/AKfycbxQa2uN5UsBSxv63ahBWMM3J9n-zQ4q67WVRiZNEyxNlkmEudl2-dgLMrA6GSGOGXkUWw/exec";
+
+  var frame = document.getElementById("app");
+  var splash = document.getElementById("splash");
+  var msg = document.getElementById("msg");
+
+  if (!navigator.onLine) {
+    msg.textContent = "Jste offline. Želví BOWLING potřebuje internet, výsledky jsou v Google tabulce.";
+  } else {
+    frame.src = APP_URL;
+    frame.addEventListener("load", function () { splash.classList.add("gone"); });
+    setTimeout(function () {
+      if (!splash.classList.contains("gone")) {
+        msg.innerHTML = 'Načítání trvá dlouho. <a href="' + APP_URL + '" target="_blank" rel="noopener">Otevřít aplikaci přímo</a>';
+      }
+    }, 15000);
+  }
+  window.addEventListener("online", function () { if (!frame.src) location.reload(); });
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(function () {});
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "Želví BOWLING",
+  "short_name": "Želví BOWLING",
+  "description": "Zápis výsledků, statistiky hráčů a mapa území bowlingové party.",
+  "lang": "cs",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#15213B",
+  "theme_color": "#15213B",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
